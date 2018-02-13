@@ -18,7 +18,7 @@ int simple_init(void)
 		printk("parent process: %s, %d\n", task->comm, task->pid);
 		struct task_struct *paren;
 		paren = task->real_parent;
-		while(paren->pid != 1){
+		while(paren->pid != 0){
 			printk("Ancestor process: %s, %d\n", paren->comm, paren->pid);
 			paren = paren->real_parent;
 		}
