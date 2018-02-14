@@ -7,6 +7,8 @@ int simple_init(void)
 {
 
 	struct task_struct *task;
+	struct task_struct *paren;
+	int pos_ancestor;
 	for_each_process(task)
 	{
 	/* on each iteration task points to the next task */
@@ -15,12 +17,28 @@ int simple_init(void)
 	// the main task to figure out here is which process to halt when
 	// each task_struct has struct *next_task, *prev_task;
 
-		printk("parent process: %s, %d\n", task->comm, task->pid);
-		struct task_struct *paren;
+		printk("parent process: name-> %s, pid->  %d, state-> %ld\n", task->comm, task->pid, task->state);
+		
 		paren = task->real_parent;
+		pos_ancestor = 1;
 		while(paren->pid != 0){
-			printk("Ancestor process: %s, %d\n", paren->comm, paren->pid);
-			paren = paren->real_parent;
+			if (pos_ancestor == 1){
+				printk("Father process: name-> %s, pid->  %d, state-> %ld\n", paren->comm, paren->pid, paren->state);
+				paren = paren->real_parent;
+				pos_ancestor++;
+			}
+			else if (pos_ancestor ==2){
+				printk("Grand father process: name-> %s, pid->  %d, state-> %ld\n", paren->comm, paren->pid, paren->state);
+                                paren = paren->real_parent;
+                                pos_ancestor++;
+                        }
+			else{
+				printk("Ancestor process: name-> %s, pid->  %d, state-> %ld\n", paren->comm, paren->pid, paren->state);
+                                paren = paren->real_parent;
+                                pos_ancestor++;
+                        }
+
+
 		}
 		printk("\n\n");
          }
@@ -35,6 +53,6 @@ void simple_exit(void)
 module_init(simple_init);
 module_exit(simple_exit);
 MODULE_LICENSE("GPL");
-MODULE_DESCRIPTION("Simple Module");
-MODULE_AUTHOR("SGG");
+MODULE_DESCRIPTION("");
+MODULE_AUTHOR("Ashim");
 
